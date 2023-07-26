@@ -2,14 +2,29 @@ nav {
   background-color: #333;
   color: white;
   padding: 15px;
+  display: flex;
+  justify-content: space-between; /* This will evenly distribute your nav items */
 }
 
 nav ul {
   list-style-type: none;
   display: flex;
   gap: 10px;
+  margin: 0; /* Removes default margin */
+  padding: 0; /* Removes default padding */
 }
 
 nav ul li {
-  display: inline;
+  padding: 5px 10px; /* Gives each nav item some padding */
+  border-radius: 5px; /* Rounds the corners of each nav item */
+}
+
+nav ul li:hover {
+  background-color: #555; /* Changes the background color when you hover over a nav item */
+  cursor: pointer; /* Changes the cursor to a pointer when hovering over a nav item */
+}
+
+nav a {
+  color: white; /* Ensures the nav item text is white */
+  text-decoration: none; /* Removes the underline from the nav item text */
 }

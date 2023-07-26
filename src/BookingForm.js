@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { fetchAPI } from "./api.js"; // replace './api' with the path to your API file
 
 function BookingForm({ availableTimes, dispatch }) {
   const [date, setDate] = useState("");
@@ -10,9 +11,16 @@ function BookingForm({ availableTimes, dispatch }) {
     event.preventDefault();
   };
 
-  const handleDateChange = (event) => {
+  const handleDateChange = async (event) => {
     setDate(event.target.value);
-    dispatch({ type: "UPDATE_TIMES", date: event.target.value });
+    dispatch({ type: "LOADING_TIMES" });
+
+    try {
+      const times = await fetchAPI(event.target.value);
+      dispatch({ type: "UPDATE_TIMES", payload: times });
+    } catch (err) {
+      dispatch({ type: "FETCH_ERROR", payload: err.message });
+    }
   };
 
   return (
@@ -34,14 +42,14 @@ function BookingForm({ availableTimes, dispatch }) {
         value={time}
         onChange={(e) => setTime(e.target.value)}
       >
-        {availableTimes ? (
-          availableTimes.map((time, index) => (
+        {availableTimes.loading ? (
+          <option>Loading...</option>
+        ) : (
+          availableTimes.times.map((time, index) => (
             <option key={index} value={time}>
               {time}
             </option>
           ))
-        ) : (
-          <option>Loading...</option>
         )}
       </select>
 

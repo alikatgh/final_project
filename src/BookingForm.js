@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { fetchAPI } from "./api.js"; // replace './api' with the path to your API file
 
-function BookingForm({ availableTimes, dispatch }) {
+function BookingForm({ availableTimes, dispatch, submitForm }) {
+  const { loading, times } = availableTimes;
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [guests, setGuests] = useState("");
@@ -9,18 +9,17 @@ function BookingForm({ availableTimes, dispatch }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    submitForm({
+      date,
+      time,
+      guests,
+      occasion,
+    });
   };
 
-  const handleDateChange = async (event) => {
+  const handleDateChange = (event) => {
     setDate(event.target.value);
-    dispatch({ type: "LOADING_TIMES" });
-
-    try {
-      const times = await fetchAPI(event.target.value);
-      dispatch({ type: "UPDATE_TIMES", payload: times });
-    } catch (err) {
-      dispatch({ type: "FETCH_ERROR", payload: err.message });
-    }
+    dispatch({ type: "UPDATE_TIMES", date: event.target.value });
   };
 
   return (
@@ -42,10 +41,10 @@ function BookingForm({ availableTimes, dispatch }) {
         value={time}
         onChange={(e) => setTime(e.target.value)}
       >
-        {availableTimes.loading ? (
+        {loading ? (
           <option>Loading...</option>
         ) : (
-          availableTimes.times.map((time, index) => (
+          times.map((time, index) => (
             <option key={index} value={time}>
               {time}
             </option>

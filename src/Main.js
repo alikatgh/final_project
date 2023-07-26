@@ -4,6 +4,7 @@ import BookingForm from "./BookingForm";
 import HomePage from "./HomePage";
 import ContactPage from "./ContactPage";
 import { fetchAPI } from "./api";
+import ConfirmedBooking from "./ConfirmedBooking";
 
 export const reducer = (state, action) => {
   switch (action.type) {
@@ -17,12 +18,20 @@ export const reducer = (state, action) => {
 };
 
 function Main() {
+  const navigate = useNavigate();
   const initialState = {
     loading: true,
     times: ["17:00", "18:00", "19:00", "20:00", "21:00"],
   };
 
   const [availableTimes, dispatch] = useReducer(reducer, initialState);
+
+  const submitForm = async (formData) => {
+    const success = await submitAPI(formData);
+    if (success) {
+      navigate("/confirmed");
+    }
+  };
 
   useEffect(() => {
     const fetchTimes = async () => {
@@ -41,10 +50,15 @@ function Main() {
         <Route
           path="/booking"
           element={
-            <BookingForm availableTimes={availableTimes} dispatch={dispatch} />
+            <BookingForm
+              availableTimes={availableTimes}
+              dispatch={dispatch}
+              submitForm={submitForm}
+            />
           }
         />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/confirmed" element={<ConfirmedBooking />} />
       </Routes>
     </main>
   );
